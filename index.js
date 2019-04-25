@@ -13,20 +13,15 @@ const URL = 'https://www.alphavantage.co/';
 
 app.get('/get', function (req, res) {
 	const symbols = req.query.symbols.split(',');
-	new Promise((resolve, reject) => {
-		const data = [];
-		symbols.forEach(symbol => {
-			request(URL + `query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${KEY}`, {json: true}, (err, res, body) => {
-				console.log(`Requesting ${symbol}`);
-				data.push(body);
-			});
+	const data = [];
+	symbols.forEach((symbol, index, array) => {
+		request(URL + `query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${KEY}`, {json: true}, (err, r, body) => {
+			console.log(`Requesting ${symbol}`);
+			data.push(body);
+			if (index === array.length - 1) {
+				res.send(data);
+			}
 		});
-		// TODO Return this async
-		return data
-	}).then(data => {
-		res.send(data);
-	}).catch(err => {
-		console.error(err);
 	});
 });
 
