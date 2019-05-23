@@ -2,6 +2,7 @@
 const fs = require('fs');
 const express = require('express');
 const request = require('request');
+const cors = require('cors');
 
 // Network variables
 const app = express();
@@ -10,6 +11,8 @@ const port = 3000;
 // API variables
 const KEY = fs.readFileSync('key.txt', 'utf8');
 const URL = 'https://www.alphavantage.co/';
+
+app.use(cors());
 
 app.get('/get', function (req, res) {
 	const symbols = req.query.symbols.split(',');
