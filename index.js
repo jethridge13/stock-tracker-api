@@ -17,10 +17,18 @@ app.use(cors());
 app.get('/get', function (req, res) {
 	const symbols = req.query.symbols.split(',');
 	const data = [];
-	symbols.forEach((symbol, index, array) => {
-		request(URL + `query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${KEY}`, {json: true}, (err, r, body) => {
-			console.log(`Requesting ${symbol}`);
-			data.push(body);
+	symbols.forEach((ticker, index, array) => {
+		request(URL + `query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${KEY}`, {json: true}, (err, r, body) => {
+			console.log(`Requesting ${ticker}`);
+      // TODO Make this more robust
+      const symbol = body['Meta Data']['2. Symbol'];
+      const dates = body['Time Series (Daily)'];
+      const response = {
+        symbol,
+        dates,
+      }
+      console.log(response);
+			data.push(response);
 			if (index === array.length - 1) {
 				res.send(data);
 			}
